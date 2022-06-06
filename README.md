@@ -6,10 +6,12 @@ Provision WEB application
 
 Collection of DBMS Application objects:
 
-**LegalDB**	юридический отдел
-**PersonalDB**  персонал
-**ProvisionDB** снабжение
-**PurchaseDB**  закупки
-**SaleDB**      продажи 
-**WorkflowDB**  секретариат
-**storage**     хранилище документов
+>
+- **LegalDB**	  юридический отдел
+- **PersonalDB**  персонал
+- **ProvisionDB** снабжение
+- **PurchaseDB**  закупки
+- **SaleDB**      продажи 
+- **WorkflowDB**  секретариат
+- **storage**     хранилище документов
+<
