@@ -1,9 +1,10 @@
 # provision.mssql.db
-Provision WEB application MSSQL Server TSQL objects
+Provision WEB application 
 
-## **АИС "Снабжение" (web-приложение, разработка, полный цикл работ).**
+##**MSSQL Server TSQL objects**
 
-Коллекция объектов СУБД Приложения:
+
+Collection of DBMS Application objects:
 
 **LegalDB**	юридический отдел
 **PersonalDB**  персонал
