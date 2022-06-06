@@ -14,4 +14,3 @@ Collection of DBMS Application objects:
 - **SaleDB**      продажи 
 - **WorkflowDB**  секретариат
 - **storage**     хранилище документов
-<
