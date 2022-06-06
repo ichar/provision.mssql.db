@@ -1,0 +1,14 @@
+USE [ProvisionDB]
+GO
+/****** Object:  Trigger [Reviews_Log_Ins_trg]    Script Date: 10/26/2020 05:41:09 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+create trigger [dbo].[Reviews_Log_Ins_trg] on [dbo].[Reviews_tb]
+for insert
+as
+  INSERT INTO [dbo].[Reviews_Log_tb]
+  ([TID], [Status], [EditedBy], [RD], [Oper])
+  select [TID], [Status], [Login], [RD], 'I' from inserted
+GO

@@ -1,0 +1,1 @@
+--copy and run new data from DIC_StockList_tb.Table.sql

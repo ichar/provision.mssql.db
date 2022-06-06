@@ -1,0 +1,542 @@
+alter table [ProvisionDB].[dbo].[Orders_tb] add [Account] [varchar](500) NULL
+
+-------
+
+alter table [ProvisionDB].[dbo].[Orders_tb] alter column [ConditionID] [int] NULL
+alter table [ProvisionDB].[dbo].[Orders_tb] alter column [SellerID] [int] NULL
+
+update [ProvisionDB].[dbo].[Orders_tb] set Status=4 where Status=3
+update [ProvisionDB].[dbo].[Orders_tb] set Status=3 where Status=2
+update [ProvisionDB].[dbo].[Orders_tb] set Status=2 where Status=1
+
+-------
+
+alter table [ProvisionDB].[dbo].[Payments_tb] add [Comment] [varchar](500) NULL
+
+-------
+
+alter table [ProvisionDB].[dbo].[Comments_tb] add [SubdivisionID] [int] NULL
+
+ALTER TABLE [ProvisionDB].[dbo].[Comments_tb]  WITH CHECK ADD  CONSTRAINT [FK_Comments_SubdivisionID] FOREIGN KEY([SubdivisionID])
+REFERENCES [ProvisionDB].[dbo].[DIC_Subdivisions_tb] ([TID])
+
+ALTER TABLE [ProvisionDB].[dbo].[Comments_tb] CHECK CONSTRAINT [FK_Comments_SubdivisionID]
+
+-------
+
+alter table [ProvisionDB].[dbo].[Orders_tb] add [EditedBy] [varchar](50) NULL
+update [ProvisionDB].[dbo].[Orders_tb] set [EditedBy]=[Login]
+
+update [ProvisionDB].[dbo].[Orders_tb] set [Tax]=[Total]-([Total]/1.2)
+update [ProvisionDB].[dbo].[Payments_tb] set [Tax]=[Total]-([Total]/1.2)
+update [ProvisionDB].[dbo].[Items_tb] set [Tax]=[Total]-([Total]/1.2)
+
+-------
+
+update [ProvisionDB].[dbo].[DIC_Equipments_tb] set Name='' where Name=Title
+
+-------
+
+alter table [ProvisionDB].[dbo].[DIC_Subdivisions_tb] add [Code] [char](4) NULL
+
+update [ProvisionDB].[dbo].[DIC_Subdivisions_tb] set Code='0030' where TID=7
+update [ProvisionDB].[dbo].[DIC_Subdivisions_tb] set Code='0031' where TID=4
+update [ProvisionDB].[dbo].[DIC_Subdivisions_tb] set Code='0032' where TID=3
+update [ProvisionDB].[dbo].[DIC_Subdivisions_tb] set Code='0033' where TID=6
+
+-------
+
+alter table [ProvisionDB].[dbo].[OrderDates_tb] add [ReviewDueDate] [datetime] NULL
+alter table [ProvisionDB].[dbo].[OrderDates_tb] add [WithMail] [bit] NULL
+
+-------
+
+update [ProvisionDB].[dbo].[DIC_Subdivisions_tb] set Code='0100' where Code='0050'
+
+alter table [ProvisionDB].[dbo].[Items_tb] add [Account] [varchar](100) NULL
+
+-------
+
+alter table [ProvisionDB].[dbo].[Orders_tb] alter column [Price] [float] NULL
+
+-------
+
+!!! Rename colimn `TID` to `ID` in [ProvisionDB].[dbo].[Reviewers_tb]
+
+SELECT DISTINCT o.* FROM 
+    [ProvisionDB].dbo.WEB_Orders_vw AS o LEFT OUTER JOIN [ProvisionDB].dbo.Reviewers_tb AS r ON r.OrderID=o.TID
+where r.Login='sales' order by TID desc
+
+-------
+
+alter table [ProvisionDB].[dbo].[OrderChanges_tb] alter column [Value] [varchar](1000) NULL
+
+-------
+
+update [ProvisionDB].[dbo].[Orders_tb] set Account=(
+	select top 1 Value from [ProvisionDB].[dbo].[Params_tb]
+	where OrderID=[ProvisionDB].[dbo].[Orders_tb].TID and ParamID=5
+)
+
+-------
+
+alter table [ProvisionDB].[dbo].[OrderChanges_tb] alter column [Name] [varchar](500) NULL
+
+-------
+
+alter table [ProvisionDB].[dbo].[OrderChanges_tb] alter column [Value] [varchar](1050) NULL
+
+-------
+
+insert into [ProvisionDB].[dbo].[DIC_Categories_tb] values
+('аварийная'),
+('срочная'),
+('ТЗ'),
+('общехозяйственные расходы'),
+('переоснащение оборудования, рабочих мест'),
+('ЗИП')
+
+alter table [ProvisionDB].[dbo].[Orders_tb] add [CategoryID] [int] NULL
+GO
+CREATE NONCLUSTERED INDEX [WX_Orders_CategoryID] ON [ProvisionDB].[dbo].[Orders_tb]
+(
+	[CategoryID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+ALTER TABLE [ProvisionDB].[dbo].[Orders_tb]  WITH CHECK ADD  CONSTRAINT [FK_Orders_CategoryID] FOREIGN KEY([CategoryID])
+REFERENCES [ProvisionDB].[dbo].[DIC_Categories_tb] ([TID])
+GO
+
+-------
+
+alter table [ProvisionDB].[dbo].[DIC_Sellers_tb] add [Code] [varchar](20) NULL
+alter table [ProvisionDB].[dbo].[DIC_Sellers_tb] add [Type] [int] NULL
+alter table [ProvisionDB].[dbo].[DIC_Sellers_tb] add [Contact] [varchar](200) NULL
+alter table [ProvisionDB].[dbo].[DIC_Sellers_tb] add [URL] [varchar](200) NULL
+alter table [ProvisionDB].[dbo].[DIC_Sellers_tb] add [Phone] [varchar](100) NULL
+alter table [ProvisionDB].[dbo].[DIC_Sellers_tb] add [Email] [varchar](100) NULL
+alter table [ProvisionDB].[dbo].[DIC_Sellers_tb] add [EditedBy] [varchar](50) NULL
+alter table [ProvisionDB].[dbo].[DIC_Sellers_tb] add [RD] [datetime] NULL
+
+alter table [ProvisionDB].[dbo].[Orders_tb] add [URL] [varchar](200) NULL
+alter table [ProvisionDB].[dbo].[Orders_tb] alter column [Purpose] [varchar](2000) NULL
+alter table [ProvisionDB].[dbo].[OrderChanges_tb] alter column [Value] [varchar](2000) NULL
+alter table [ProvisionDB].[dbo].[DIC_Equipments_tb] alter column [Title] [varchar](1000) NULL
+
+-------
+
+select * from [ProvisionDB].[dbo].[WEB_Orders_vw] where EditedBy='polina'
+select * from [ProvisionDB].[dbo].[OrderChanges_tb] where Login='polina' order by OrderID,TID
+select OrderID,COUNT(*) from [ProvisionDB].[dbo].[OrderChanges_tb] where Login='polina' group by OrderID
+
+-------
+
+alter table [ProvisionDB].[dbo].[DIC_StockList_tb] add [Children] [int] NULL
+
+/*
+update [ProvisionDB].[dbo].[DIC_StockList_tb] set Children=[ProvisionDB].[dbo].[GET_RowsNodeCount_fn](NodeCode)
+from [ProvisionDB].[dbo].[DIC_StockList_tb]
+
+update [ProvisionDB].[dbo].[DIC_StockList_tb] set Children=
+--select TID,	
+  case when 
+	[ProvisionDB].[dbo].[GET_RowsNodeCount_fn](NodeCode)
+  > 0 then 1 else 0 end
+from [ProvisionDB].[dbo].[DIC_StockList_tb]
+
+DECLARE @pCode varchar(100) = '0001.0001.0000'
+--select * from [ProvisionDB].[dbo].[DIC_StockList_tb] where @pCode like NodeCode+'%'
+--select item from [ProvisionDB].[dbo].[GET_SplittedStrings_fn](@pCode, '.')
+update [ProvisionDB].[dbo].[DIC_StockList_tb] set Children=
+	case when [ProvisionDB].[dbo].[GET_RowsNodeCount_fn](NodeCode) > 0 then 1 else 0 end
+from [ProvisionDB].[dbo].[DIC_StockList_tb]
+where @pCode like NodeCode+'%'
+
+*/
+
+select TID,Name,NodeLevel,NodeCode,
+    (select count(*) from [ProvisionDB].[dbo].[DIC_StockList_tb] where NodeCode like a.NodeCode+'.%')
+from [ProvisionDB].[dbo].[DIC_StockList_tb] as a
+order by a.NodeCode
+
+-------
+
+alter table [ProvisionDB].[dbo].[Orders_tb] add [StockListID] [int] NULL
+
+-------
+
+CREATE NONCLUSTERED INDEX [WX_Orders_StockListID] ON [ProvisionDB].[dbo].[Orders_tb]
+(
+	[StockListID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+ALTER TABLE [ProvisionDB].[dbo].[Orders_tb]  WITH CHECK ADD  CONSTRAINT [FK_Orders_StockListID] FOREIGN KEY([StockListID])
+REFERENCES [ProvisionDB].[dbo].[DIC_StockList_tb] ([TID])
+GO
+ALTER TABLE [ProvisionDB].[dbo].[Orders_tb] CHECK CONSTRAINT [FK_Orders_StockListID]
+GO
+
+-------
+
+alter table [ProvisionDB].[dbo].[DIC_StockList_tb] alter column [ShortName] [varchar](100) NULL
+
+-------
+
+alter table [ProvisionDB].[dbo].[Payments_tb] add [Currency] [varchar](10) NULL
+alter table [ProvisionDB].[dbo].[Payments_tb] add [Rate] [float] NULL
+
+-------
+
+SELECT * FROM [ProvisionDB].[dbo].[DIC_Params_tb] order by TID
+alter table [ProvisionDB].[dbo].[DIC_Params_tb] add [Code] [varchar](10) NULL
+/*
+update [ProvisionDB].[dbo].[DIC_Params_tb] set Code='DP' where TID=7
+update [ProvisionDB].[dbo].[DIC_Params_tb] set Code='DF' where TID=9
+update [ProvisionDB].[dbo].[DIC_Params_tb] set Code='SF' where TID=15
+*/
+
+SELECT * FROM [ProvisionDB].[dbo].[DIC_Conditions_tb] order by Name
+alter table [ProvisionDB].[dbo].[DIC_Conditions_tb] add [Code] [varchar](10) NULL
+/*
+update [ProvisionDB].[dbo].[DIC_Conditions_tb] set Code='POST:10' where TID=16
+update [ProvisionDB].[dbo].[DIC_Conditions_tb] set Code='POST:14' where TID=5
+update [ProvisionDB].[dbo].[DIC_Conditions_tb] set Code='POST:21' where TID=3
+update [ProvisionDB].[dbo].[DIC_Conditions_tb] set Code='POST:30' where TID=7
+update [ProvisionDB].[dbo].[DIC_Conditions_tb] set Code='POST:60' where TID=12
+update [ProvisionDB].[dbo].[DIC_Conditions_tb] set Code='POST:90' where TID=17
+update [ProvisionDB].[dbo].[DIC_Conditions_tb] set Code='POST' where TID=1
+update [ProvisionDB].[dbo].[DIC_Conditions_tb] set Code='BEFORE:100' where TID=4
+update [ProvisionDB].[dbo].[DIC_Conditions_tb] set Code='BEFORE:40' where TID=15
+update [ProvisionDB].[dbo].[DIC_Conditions_tb] set Code='BEFORE:50' where TID=13
+update [ProvisionDB].[dbo].[DIC_Conditions_tb] set Code='BEFORE' where TID=2
+update [ProvisionDB].[dbo].[DIC_Conditions_tb] set Code='D10' where TID=14
+update [ProvisionDB].[dbo].[DIC_Conditions_tb] set Code='NO' where TID=8
+*/
+
++ [ProvisionDB].[dbo].[WEB_CostOrders_vw]
+~ [ProvisionDB].[dbo].[WEB_OrderParams_vw]
+
+=================
+
+update [ProvisionDB].[dbo].[WEB_OrderPayments_vw] set Status=5 where Status=2
+update [ProvisionDB].[dbo].[WEB_OrderPayments_vw] set Status=4 where Status=1
+
+alter table [ProvisionDB].[dbo].[Payments_tb] add [Comment] [varchar](1000) NULL
+
+-------
+
+alter table [ProvisionDB].[dbo].[Orders_tb] add [MD] [int] NULL
+update [ProvisionDB].[dbo].[Orders_tb] set [MD]=0
+
+-------
+
+R:\db\ProvisionDB\update\DROP_Orders_Identity
+
+
+SELECT * FROM [ProvisionDB].[dbo].[DIC_Categories_tb] order by TID desc
+alter table [ProvisionDB].[dbo].[DIC_Categories_tb] add [MD] [int] NULL
+update [ProvisionDB].[dbo].[DIC_Categories_tb] set [MD]=0
+--update [ProvisionDB].[dbo].[DIC_Categories_tb] set [MD]=0 where TID=1
+update [ProvisionDB].[dbo].[DIC_Categories_tb] set [MD]=NULL where TID in (1,2,3)
+--update [ProvisionDB].[dbo].[DIC_Categories_tb] set [MD]=10 where TID>6
+
+insert into [ProvisionDB].[dbo].[DIC_Categories_tb] values
+('Сток',10),
+('Индивидуальный заказ',10),
+('Корпоративный заказ',10),
+('Внутренний заказ',10),
+('Маркетинг',10),
+('Выставка',10)
+
+
+SELECT * FROM [ProvisionDB].[dbo].[DIC_Params_tb] order by TID desc
+alter table [ProvisionDB].[dbo].[DIC_Params_tb] add [MD] [int] NULL
+update [ProvisionDB].[dbo].[DIC_Params_tb] set [MD]=0
+update [ProvisionDB].[dbo].[DIC_Params_tb] set [MD]=0 where TID=1
+update [ProvisionDB].[dbo].[DIC_Params_tb] set [MD]=NULL where TID in (2,3,11,12,13)
+update [ProvisionDB].[dbo].[DIC_Params_tb] set [MD]=10 where TID>15
+
+
+SELECT * FROM [ProvisionDB].[dbo].[DIC_Sellers_tb] order by TID desc
+alter table [ProvisionDB].[dbo].[DIC_Sellers_tb] add [MD] [int] NULL
+update [ProvisionDB].[dbo].[DIC_Sellers_tb] set [MD]=0
+update [ProvisionDB].[dbo].[DIC_Sellers_tb] set [MD]=NULL where TID=298
+update [ProvisionDB].[dbo].[DIC_Sellers_tb] set [MD]=10 where TID>298
+
+
+[ProvisionDB].[dbo].[WEB_Categories_vw]
+[ProvisionDB].[dbo].[WEB_OrderParams_vw]
+[ProvisionDB].[dbo].[WEB_Sellers_vw]
+[ProvisionDB].[dbo].[WEB_Params_vw]
+
+dbo.REGISTER_Order_sp.StoredProcedure.sql
+dbo.UPDATE_Order_sp.StoredProcedure.sql
+dbo.CHECK_Category_sp.StoredProcedure.sql
+dbo.CHECK_Seller_sp.StoredProcedure.sql
+dbo.ADD_Param_sp.StoredProcedure.sql
+
+
+INSERT INTO [ProvisionDB].[dbo].[DIC_StockList_tb] VALUES
+('Продукция', NULL, '', 1, '0013', '', '', 'admin', '2020-10-30 19:00:03.243', 0),
+('Основное производство', NULL, '', 2, '0013.0000', '', '', 'admin', '2020-10-30 19:13:52.810', 0),
+('Банковские пластиковые карты', NULL, '', 3, '0013.0000.0000', '', '', 'admin', '2020-10-30 20:05:48.683', 0),
+('Экологически-чистые карты', NULL, '', 3, '0013.0000.0001', '', '', 'admin', '2020-10-30 20:06:06.973', 0),
+('Плагины', NULL, 'Продукция:Плагины', 3, '0013.0000.0002', '', '', 'admin', '2020-10-30 20:07:06.700', 0),
+('Носимые бесконтактные устройства', NULL, 'Продукция:Носимые бесконтактные устройства', 3, '0013.0000.0003', '', '', 'admin', '2020-10-30 20:07:56.703', 0),
+('Социальные карты', NULL, '', 3, '0013.0000.0004', '', '', 'admin', '2020-10-30 20:08:20.967', 0),
+('ID-карты', NULL, '', 3, '0013.0000.0005', '', '', 'admin', '2020-10-30 20:08:29.750', 0),
+('Транспортные карты', NULL, '', 3, '0013.0000.0006', '', '', 'admin', '2020-10-30 20:09:33.337', 0),
+('Карты лояльности', NULL, '', 3, '0013.0000.0007', '', '', 'admin', '2020-10-30 20:09:47.177', 0),
+('Карты контроля доступа', NULL, '', 3, '0013.0000.0008', '', '', 'admin', '2020-10-30 20:10:02.417', 0),
+('Ювелирное производство', NULL, '', 2, '0013.0001', '', '', 'admin', '2020-10-30 19:14:23.000', 0),
+('Гибридно-металлические карты', NULL, '', 3, '0013.0001.0000', '', '', 'admin', '2020-10-30 19:28:43.653', 0),
+('Гибридно-металлические карты с драгоценными вставками', NULL, '', 3, '0013.0001.0001', '', '', 'admin', '2020-10-30 19:34:31.133', 0),
+('Карты с золотой и серебряной мембранами', NULL, '', 3, '0013.0001.0002', '', '', 'admin', '2020-10-30 20:02:08.273', 0),
+('Эксклюзивные карты', NULL, 'Продукция:Эксклюзивные карты', 3, '0013.0001.0003', '', '', 'admin', '2020-10-30 20:06:31.357', 0),
+('Арт-коллекция Rosan Diamond', NULL, 'Продукция:Арт-коллекция Rosan Diamond', 3, '0013.0001.0004', '', '', 'admin', '2020-10-30 20:06:40.363', 0)
+
+---------
+
+SELECT * FROM [ProvisionDB].[dbo].[Items_tb] order by TID desc
+alter table [ProvisionDB].[dbo].[Items_tb] add [Currency] [varchar](10) NULL
+
+[ProvisionDB].[dbo].[WEB_OrderItems_vw]
+
+[dbo].[ADD_Item_sp]
+[dbo].[DEL_Item_sp]
+
+---------
+
+select * from [ProvisionDB].[dbo].[WEB_OrderItems_vw]
+alter table [ProvisionDB].[dbo].[Items_tb] add [Vendor] [varchar](100) NULL
+
+[ProvisionDB].[dbo].[WEB_OrderItems_vw]
+[ProvisionDB].[dbo].[WEB_Vendors_vw]
+
+select * from [ProvisionDB].[dbo].[WEB_Vendors_vw] order by Name
+
+---------
+
+Rename: [ProvisionDB].[dbo].[WEB_Vendors_vw] --> WEB_OrderVendors_vw
+
+dbo.DIC_Vendors_tb.Table.sql
+
+[ProvisionDB].[dbo].[WEB_Vendors_vw]
+
+insert into [ProvisionDB].[dbo].[DIC_Vendors_tb]
+  select distinct Name from [ProvisionDB].[dbo].[WEB_OrderVendors_vw]
+
+alter table [ProvisionDB].[dbo].[Items_tb] add [VendorID] [int] NULL
+
+update [ProvisionDB].[dbo].[Items_tb] set VendorID=(
+  select TID from [ProvisionDB].[dbo].[DIC_Vendors_tb] where Name=[ProvisionDB].[dbo].[Items_tb].Vendor
+)
+
+[ProvisionDB].[dbo].[WEB_OrderItems_vw]
+
+select * from [ProvisionDB].[dbo].[WEB_OrderItems_vw] where VendorID is not NULL
+
+dbo.CHECK_Vendor_sp.StoredProcedure.sql
+dbo.ADD_Item_sp.StoredProcedure.sql
+
+[ProvisionDB].[dbo].[WEB_OrderVendors_vw]
+
+Finish: alter table [ProvisionDB].[dbo].[Items_tb] drop column [Vendor]
+
+---------
+
+v4: [ProvisionDB].[dbo].[WEB_Sellers_vw]
+
+---------
+
+v19: [ProvisionDB].[dbo].[WEB_Links_vw]
+v20: [ProvisionDB].[dbo].[WEB_OrderLinks_vw]
+
+---------
+
+alter table [ProvisionDB].[dbo].[Orders_tb] add [SectorID] [int] NULL
+
+v1: [ProvisionDB].[dbo].[WEB_Orders_vw]
+
+insert into [ProvisionDB].[dbo].[DIC_Sectors_tb] (Name) values
+('- не задано -'),
+('Производство. Намотка антенны'),
+('Производство. Магнитоукладка'),
+('Производство. Кашировка'),
+('Производство. Ламинатор'),
+('Производство. Рубка'),
+('Производство. Офсетная печать'),
+('Производство. СТП'),
+('Производство. Цифровая печать'),
+('Производство. Шелкотрафаретная печать'),
+('Производство. Склад'),
+('Производство. Участок горячего тиснения'),
+('Производство. Имплантация'),
+('Производство. Ламинация чипов'),
+('Производство. Кодировка чипов'),
+('Производство. ОТК'),
+('Производство. Офис'),
+('Производство. Шредерная'),
+('Персонализация. Раскладка'),
+('Персонализация. Склад'),
+('Персонализация. Офис'),
+('Персонализация. Серверная'),
+('Персонализация. ПИН-принтерная'),
+('Персонализация. Выпуск карт'),
+('Персонализация. Печать листовок'),
+('Персонализация. ОТК-2'),
+('Розан Даймонд. Сборка'),
+('Розан Даймонд. Склад'),
+('Розан Даймонд. Шлифовка'),
+('Розан Даймонд. Камнерезка'),
+('Розан Даймонд. Фрезеровка'),
+('Розан Даймонд. Гравировка'),
+('Розан Даймонд. Покраска карт'), 
+('Розан Даймонд. Ламинация изделий')
+
+v1: [ProvisionDB].[dbo].[WEB_Orders_vw]
+v1.2: [ProvisionDB].[dbo].[WEB_CostOrders_vw]
+v19: [ProvisionDB].[dbo].[WEB_Links_vw]
+v20: [ProvisionDB].[dbo].[WEB_OrderLinks_vw]
+v21: [ProvisionDB].[dbo].[WEB_Sectors_vw]
+
+--------
+
+alter table [ProvisionDB].[dbo].[DIC_StockList_tb] add [Params] [varchar](200) NULL
+update [ProvisionDB].[dbo].[DIC_StockList_tb] set Params='FD:' where TID in (7,331)
+
+v16: [ProvisionDB].[dbo].[WEB_Stocks_vw]
+
+select * from [ProvisionDB].[dbo].[WEB_Stocks_vw] where Params is not NULL order by NodeCode
+select * from [ProvisionDB].[dbo].[WEB_Stocks_vw] order by NodeCode
+select * from [ProvisionDB].[dbo].[DIC_StockList_tb] order by TID desc
+SELECT TID, Name, NodeLevel, NodeCode as _____________________________________, Children, EditedBy FROM [ProvisionDB].[dbo].[DIC_StockList_tb] order by NodeCode
+
+select * from [ProvisionDB].[dbo].[WEB_Schedule_vw] order by OrderID desc, ReviewID desc
+
+SELECT * FROM [ProvisionDB].[dbo].[WEB_Orders_vw] order by TID desc
+SELECT [ProvisionDB].[dbo].[CHECK_IsInReviews_fn](ReviewStatuses, '7,8') FROM [ProvisionDB].[dbo].[WEB_Orders_vw] order by TID desc
+select * from [ProvisionDB].[dbo].[WEB_Orders_vw] where [ProvisionDB].[dbo].[CHECK_IsInReviews_fn](ReviewStatuses, '7,8')=1 order by TID desc
+
+EXEC [ProvisionDB].[dbo].[BATCH_SetAutoclosed_sp] 1,NULL
+EXEC [ProvisionDB].[dbo].[BATCH_SetAutoclosed_sp] 1,'polina'
+
+SELECT * FROM [ProvisionDB].[dbo].[WEB_Reviews_vw] order by TID desc
+SELECT * FROM [ProvisionDB].[dbo].[WEB_Reviews_vw] where Status=8 order by TID desc
+
+EXEC [ProvisionDB].[dbo].[BATCH_SetAutoclosed_sp] 0,NULL
+
+--------
+
+alter table [ProvisionDB].[dbo].[OrderDates_tb] add [FinishDueDate] [datetime] NULL
+
+update [ProvisionDB].[dbo].[DIC_Params_tb] set Code='DE' where Name='Срок исполнения'
+update [ProvisionDB].[dbo].[DIC_Params_tb] set Code='AC' where Name='Номер счета'
+update [ProvisionDB].[dbo].[DIC_Params_tb] set Code='RW' where Name='Роль: рецензент'
+
+v15: [ProvisionDB].[dbo].[WEB_Schedule_vw]
+v7.1: [ProvisionDB].[dbo].[WEB_OrderParams_vw]
+
+update [ProvisionDB].[dbo].[OrderDates_tb] set FinishDueDate=(
+  select top 1 convert(datetime, Value, 102) from [ProvisionDB].[dbo].[WEB_OrderParams_vw] where Code='DE' and [ProvisionDB].[dbo].[WEB_OrderParams_vw].OrderID=[ProvisionDB].[dbo].[OrderDates_tb].OrderID and MD is NULL
+)
+
+/*
+DECLARE @id int, @v datetime
+DECLARE x CURSOR READ_ONLY FOR 
+	select OrderID, Value from [ProvisionDB].[dbo].[WEB_OrderParams_vw] where Code='DE' and MD is NULL and Value is not NULL
+OPEN x
+while (1=1) begin
+    FETCH NEXT FROM x INTO @id, @v
+    update [ProvisionDB].[dbo].[OrderDates_tb] set FinishDueDate=convert(datetime, @v, 102) where OrderID=@id
+    if @@fetch_status = -1
+        break
+end
+CLOSE x
+DEALLOCATE x
+*/
+
+SELECT * FROM [ProvisionDB].[dbo].[OrderDates_tb] where FinishDueDate is not NULL order by TID desc
+
+---------
+
+alter table [ProvisionDB].[dbo].[OrderDocuments_tb] add [ForAudit] [bit] NULL
+
+v12: [ProvisionDB].[dbo].[WEB_OrderDocuments_vw]
+v22: [ProvisionDB].[dbo].[WEB_ParamValues_vw]
+
+--------
+
+alter table [ProvisionDB].[dbo].[OrderDates_tb] add [AuditDate] [datetime] NULL
+alter table [ProvisionDB].[dbo].[OrderDates_tb] add [Validated] [datetime] NULL
+
+update [ProvisionDB].[dbo].[OrderDates_tb] set AuditDate=getdate() where OrderID in (
+    select OrderID from [ProvisionDB].[dbo].[WEB_Schedule_vw]
+    where ReviewStatus=10)
+
+SELECT * FROM [ProvisionDB].[dbo].[WEB_Orders_vw] where AuditDate is not NULL order by TID desc
+    
+--  v1: [ProvisionDB].[dbo].[WEB_Orders_vw]
+--  v15: [ProvisionDB].[dbo].[WEB_Schedule_vw]
+
+dbo.REGISTER_Review_sp.StoredProcedure.sql
+
+-------
+
+alter table [ProvisionDB].[dbo].[Items_tb] add [Barcode] [varchar](100) NULL
+
+-------
+
+Table [dbo].[Decrees_tb]
+StoredProcedure [dbo].[REGISTER_Review_sp]
+v2.1: [ProvisionDB].[dbo].[WEB_Decrees_vw]
+
+alter table [storage].[dbo].[OrderDocuments_tb] add [MD] [int] NULL
+update [storage].[dbo].[OrderDocuments_tb] set [MD]=0
+
+alter table [WorkflowDB].[dbo].[Decrees_tb] add [OrderID] [int] NULL
+alter table [WorkflowDB].[dbo].[Decrees_tb] add [ReportID] [int] NULL
+alter table [WorkflowDB].[dbo].[Decrees_tb] add [EditedBy] [varchar](50) NULL
+alter table [WorkflowDB].[dbo].[Decrees_tb] add [MD] [int] NULL
+
+v24: [ProvisionDB].[dbo].[WEB_Activities_vw]
+
+-------
+
+alter table [ProvisionDB].[dbo].[Decrees_tb] add [Accepted] [datetime] NULL
+
+v2.1: [WorkflowDB].[dbo].[WEB_Decrees_vw]
+StoredProcedure [dbo].[ACCEPT_Decree_sp]
+
+-------
+
+alter table [ProvisionDB].[dbo].[OrderDates_tb] add [Facsimile] [varchar](50) NULL
+alter table [ProvisionDB].[dbo].[Decrees_tb] add [Reported] [datetime] NULL
+
+v1: [ProvisionDB].[dbo].[WEB_Orders_vw]
+
+StoredProcedure [dbo].[SET_OrderFacsimile_sp] 
+StoredProcedure [dbo].[REGISTER_Review_sp]
+
+v2.1: [WorkflowDB].[dbo].[WEB_Decrees_vw]
+
+alter table [ProvisionDB].[dbo].[Reviews_tb] alter column Note [varchar](8000) NULL
+alter table [ProvisionDB].[dbo].[OrderChanges_tb] alter column Value [varchar](8000) NULL
+
+-------
+
+select distinct Currency from [ProvisionDB].[dbo].[Payments_tb]
+--update [ProvisionDB].[dbo].[Payments_tb] set Currency='RUB' where Currency='RUR'
+select * from [ProvisionDB].[dbo].[WEB_Orders_vw] where Currency='RUR'
+--update [ProvisionDB].[dbo].[Orders_tb] set Currency='RUB' where Currency='RUR'
+
+alter table [ProvisionDB].[dbo].[Payments_tb] add [ExchangeRate] [float] NULL
+
+v8.1: [ProvisionDB].[dbo].[WEB_OrderPayments_vw]
+v8.2: [ProvisionDB].[dbo].[WEB_ReviewPayments_vw]
+
+StoredProcedure [ProvisionDB].[dbo].[ADD_Payment_sp]
+
+-------
+
+alter table [ProvisionDB].[dbo].[Orders_tb] alter column [URL] [varchar](800) NULL

@@ -1,0 +1,79 @@
+SELECT * FROM [ProvisionDB].[dbo].[Orders_tb] where TID=3844 order by TID desc
+SELECT * FROM [ProvisionDB].[dbo].[Orders_tb] where Status=1 order by TID desc
+SELECT * FROM [ProvisionDB].[dbo].[WEB_Orders_vw] order by TID desc
+SELECT * FROM [ProvisionDB].[dbo].[WEB_Orders_vw] where TID=3844 order by TID desc
+SELECT * FROM [ProvisionDB].[dbo].[WEB_Reviews_vw] where OrderID=3844 order by TID desc
+SELECT * FROM [ProvisionDB].[dbo].[WEB_OrderChanges_vw] where OrderID=3844 order by TID desc
+
+update [ProvisionDB].[dbo].[Orders_tb] set Status=9 where TID=3844
+update [ProvisionDB].[dbo].[Orders_tb] set Status=9 where TID=3837
+update [ProvisionDB].[dbo].[Orders_tb] set Status=9 where TID=3825
+update [ProvisionDB].[dbo].[Orders_tb] set Status=9 where TID=3799
+update [ProvisionDB].[dbo].[Orders_tb] set Status=9 where TID=3699
+update [ProvisionDB].[dbo].[Orders_tb] set Status=9 where TID=3694
+
+3765
+
+SELECT * FROM [ProvisionDB].[dbo].[WEB_Orders_vw] where TID in (3844,3837,3825,3799,3699,3694) order by TID desc
+SELECT * FROM [ProvisionDB].[dbo].[WEB_Reviews_vw] 
+where OrderID in (3844,3837,3825,3799,3699,3694)
+order by TID desc
+SELECT * FROM [ProvisionDB].[dbo].[WEB_OrderChanges_vw] 
+where OrderID in (3844,3837,3825,3799,3699,3694)
+order by TID desc
+SELECT * FROM [ProvisionDB].[dbo].[DIC_Equipments_tb] 
+where TID in (select EquipmentID from [ProvisionDB].[dbo].[Orders_tb] where TID in (3844,3837,3825,3799,3699,3694))
+
+update [ProvisionDB].[dbo].[Orders_tb] set
+Article=''
+Purpose=''
+where TID=
+update [ProvisionDB].[dbo].[DIC_Equipments_tb] set
+
+
+
+
+
+
+SELECT 
+TID,SellerID,StockListID,StockListNodeCode,Article,Purpose,Equipment,EditedBy 
+FROM [ProvisionDB].[dbo].[WEB_Orders_vw] where Status=1 order by TID desc
+
+select * from [ProvisionDB].[dbo].[DIC_StockList_tb] 
+where NodeCode like '0012%'
+order by NodeCode
+SELECT TID, Name, NodeLevel, NodeCode as _____________________________________, Children, EditedBy FROM [ProvisionDB].[dbo].[DIC_StockList_tb] 
+where NodeCode like '0012%'
+order by NodeCode
+
+
+
+SELECT * FROM [ProvisionDB].[dbo].[Params_tb] order by TID desc
+SELECT * FROM [ProvisionDB].[dbo].[OrderDates_tb] order by TID desc
+
+select * from [ProvisionDB].[dbo].[DIC_Params_tb] order by Name
+select * from [ProvisionDB].[dbo].[DIC_Params_tb] where Name like 'Компания%'
+SELECT * FROM [ProvisionDB].[dbo].[WEB_Orders_vw] order by TID desc
+select * from [ProvisionDB].[dbo].[WEB_ParamValues_vw]
+
+select OrderID, ParamID, Value from [ProvisionDB].[dbo].[Params_tb] p 
+	inner join [ProvisionDB].[dbo].[DIC_Params_tb] d on d.TID=p.ParamID
+	where Name like 'Компания%'
+
+select distinct Value from [ProvisionDB].[dbo].[Params_tb] p 
+	inner join [ProvisionDB].[dbo].[DIC_Params_tb] d on d.TID=p.ParamID
+	where Name like 'Компания%'
+
+select * from [ProvisionDB].[dbo].[WEB_Companies_vw]
+
+select * from [ProvisionDB].[dbo].[WEB_Stocks_vw] where Params is not null order by NodeCode
+
+
+-- EXEC [ProvisionDB].[dbo].[BATCH_SetCompany_sp] 0,45,NULL,'Розан Файнэнс, АО','2021-01-01',0,'admin'
+-- EXEC [ProvisionDB].[dbo].[BATCH_SetCompany_sp] 0,45,'8,19,30','Розан Даймонд, ООО','2021-01-01',0,'admin'
+-- EXEC [ProvisionDB].[dbo].[BATCH_SetCompany_sp] 0,45,'37','ЭкспрессКард, АО','2021-01-01',0,'admin'
+-- EXEC [ProvisionDB].[dbo].[BATCH_SetCompany_sp] 0,45,'10,32','Розан Логистик, ООО','2021-01-01',0,'admin'
+-- EXEC [ProvisionDB].[dbo].[BATCH_SetCompany_sp] 0,45,'11','Розан СПБ','2021-01-01',0,'admin'
+-- EXEC [ProvisionDB].[dbo].[BATCH_SetCompany_sp] 0,45,'39','3Д ПЭЙ, ООО','2021-01-01',0,'admin'
+
+EXEC [ProvisionDB].[dbo].[BATCH_SetAutoclosed_sp] 1,NULL

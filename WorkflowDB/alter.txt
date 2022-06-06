@@ -1,0 +1,40 @@
+
+Table [dbo].[DIC_Activities_tb]
+Table [dbo].[Decree_tb]
+StoredProcedure [dbo].[REGISTER_Review_sp]
+
+v2.1: [ProvisionDB].[dbo].[WEB_Decrees_vw]
+
+alter table [storage].[dbo].[OrderDocuments_tb] add [MD] [int] NULL
+update [storage].[dbo].[OrderDocuments_tb] set [MD]=0
+
+alter table [WorkflowDB].[dbo].[Decrees_tb] add [OrderID] [int] NULL
+alter table [WorkflowDB].[dbo].[Decrees_tb] add [ReportID] [int] NULL
+alter table [WorkflowDB].[dbo].[Decrees_tb] add [EditedBy] [varchar](50) NULL
+alter table [WorkflowDB].[dbo].[Decrees_tb] add [MD] [int] NULL
+
+v24: [ProvisionDB].[dbo].[WEB_Activities_vw]
+
+alter table [WorkflowDB].[dbo].[Orders_tb] alter column [ActivityID] [int] NULL
+
+-------
+
+alter table [WorkflowDB].[dbo].[Decrees_tb] add [Accepted] [datetime] NULL
+
+v2.1: [WorkflowDB].[dbo].[WEB_Decrees_vw]
+StoredProcedure [dbo].[ACCEPT_Decree_sp]
+
+-------
+
+alter table [WorkflowDB].[dbo].[OrderDates_tb] add [Facsimile] [varchar](50) NULL
+alter table [WorkflowDB].[dbo].[Decrees_tb] add [Reported] [datetime] NULL
+
+v1: [WorkflowDB].[dbo].[WEB_Orders_vw]
+
+StoredProcedure [dbo].[SET_OrderFacsimile_sp] 
+StoredProcedure [dbo].[REGISTER_Review_sp]
+
+v2.1: [WorkflowDB].[dbo].[WEB_Decrees_vw]
+
+alter table [WorkflowDB].[dbo].[Reviews_tb] alter column Note [varchar](8000) NULL
+alter table [WorkflowDB].[dbo].[OrderChanges_tb] alter column Value [varchar](8000) NULL

@@ -1,0 +1,22 @@
+
+-------
+
+alter table [LegalDB].[dbo].[Decrees_tb] add [Accepted] [datetime] NULL
+
+v2.1: [WorkflowDB].[dbo].[WEB_Decrees_vw]
+StoredProcedure [dbo].[ACCEPT_Decree_sp]
+
+-------
+
+alter table [LegalDB].[dbo].[OrderDates_tb] add [Facsimile] [varchar](50) NULL
+alter table [LegalDB].[dbo].[Decrees_tb] add [Reported] [datetime] NULL
+
+v1: [LegalDB].[dbo].[WEB_Orders_vw]
+
+StoredProcedure [dbo].[SET_OrderFacsimile_sp] 
+StoredProcedure [dbo].[REGISTER_Review_sp]
+
+v2.1: [LegalDB].[dbo].[WEB_Decrees_vw]
+
+alter table [LegalDB].[dbo].[Reviews_tb] alter column Note [varchar](8000) NULL
+alter table [LegalDB].[dbo].[OrderChanges_tb] alter column Value [varchar](8000) NULL
